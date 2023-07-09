@@ -1,11 +1,10 @@
 
 """
     This code is a Pytorch implementation of the paper
-    'A Novel Neural Ensemble Architecture for Classifying Text Streams On-The-Fly'.
-    Submitted to PVLDB (Proceedings of the VLDB Endowment) 2022.
+    'A Novel Neural Ensemble Architecture for On-The-Fly Classification of Evolving Text Streams'.
+    Submitted to ACM TKDD (ACM Transactions on Knowledge Discovery from Data).
     ---------------------------
-    Author: Pouya Ghahramanian
-    Date: Dec 2021
+    Pouya Ghahramanian
     ---------------------------
 """
 
@@ -13,10 +12,8 @@ import numpy as np
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from sklearn.preprocessing import MinMaxScaler
-from sklearn.preprocessing import StandardScaler
 
-class ADANN(nn.Module):
+class AdaNEN(nn.Module):
 
     def __init__(self, feature_size = 300, arch = [64], num_classes = 2, etha = 1e-5,
                  p_drop = 0.2, betha = 0.99, s = 0.2, num_outs = 3, lrs = [1e-3, 1e-2, 1e-1],
@@ -25,7 +22,7 @@ class ADANN(nn.Module):
         ##########################################################################
         ################# Initializing model and parameters.  ####################
         ##########################################################################
-        super(ADANN, self).__init__()
+        super(AdaNEN, self).__init__()
         if len(arch) < 1:
             raise ValueError('Parameter arch should be a list of at least one element to specify the number of neurons in the first hidden layer.')
         self.device = torch.device('cuda:0') if torch.cuda.is_available() else torch.device('cpu')
@@ -175,20 +172,6 @@ class ADANN(nn.Module):
     def set_weights(self, weights):
         self.alpha.data = torch.from_numpy(weights).float().to(self.device)
 
-    def replace_output_node(self):
-        self.output_layers.append(nn.Linear(sum(self.architecture), self.num_classes))
-        index = np.argmax(np.asarray([np.max(l.data.cpu().numpy()) for l in self.losses]))
-        del self.output_layers[index]
-        tmp_lr = self.lrs[index]
-        del self.lrs[index]
-        self.lrs.append(tmp_lr)
-        params = []
-        params.append({'params': self.hidden_layers.parameters(), 'lr': self.lr})
-        for k in range(self.num_outs):
-            params.append({'params': self.output_layers[k].parameters(), 'lr': self.lrs[k]})
-        self.optim.params = params
-        print('INDEX:', index)
-
     def freeze_hidden_layer(self):
         self.FREEZE_HIDDEN = True
 
@@ -197,31 +180,4 @@ class ADANN(nn.Module):
 
     def reset_weights(self):
         weights = np.full((self.num_outs), 1 / (self.num_outs + 1.0))
-        weights = np.array([0.9, 0.05, 0.05])
         self.alpha.data = torch.from_numpy(weights).float().to(self.device)
-
-if __name__ == '__main__':
-
-    ########################################################################
-    ####### Initializing a toy model and training it on sample data  #######
-    ########################################################################
-    from sklearn.datasets import make_blobs
-    data_size = 1000
-    input, labels = make_blobs(n_samples = data_size, centers = 2, n_features = 300, random_state = 0)
-    device = torch.device('cuda:0') if torch.cuda.is_available() else torch.device('cpu')
-    classifier = ADANN(feature_size = 300, arch = [64, 32], num_classes = 2, etha = 1e-5,
-                 betha = 0.8, s = 0.2, num_outs = 3, lrs = [1e-3, 1e-2, 1e-1], optimizer = 'rmsprop')
-    classifier.to(device)
-    preds = np.zeros(data_size)
-    for i in range(data_size):
-        print('Data Instance ', i+1)
-        print('=================================================')
-        preds[i] = classifier.predict(input[i].reshape(1, -1))
-        print('Loss: ', classifier.partial_fit(input, labels))
-        accuracy = np.sum(labels[:i] == preds[:i])/(i+1) * 100
-        print('Prequential Accuracy: ', accuracy)
-        print('Ensemble weights: ', classifier.get_weights())
-        print('=================================================')
-    print('Final ensemble weights: ', classifier.get_weights())
-    accuracy = np.sum(labels == preds)/data_size * 100
-    print('Overall Accuracy: ', accuracy)
