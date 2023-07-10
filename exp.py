@@ -6,10 +6,10 @@
     Pouya Ghahramanian
     """
 
+import sys
 sys.path.append('baselines')
 import numpy as np
 import pandas as pd
-import sys
 import pandas as pd
 import logging
 import random
@@ -78,7 +78,7 @@ num_c = 2
 num_f = 300
 #data = None
 
-elif(STREAM == 'nyt'):
+if(STREAM == 'nyt'):
     # Get data stream
     logging.info('\n\tReading data stream: {}'.format(str.upper(STREAM)))
     df = pd.read_pickle('Data/nyt_modified.csv')
