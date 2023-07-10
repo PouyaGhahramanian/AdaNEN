@@ -1,12 +1,12 @@
 import numpy as np
-from skmultiflow.core.base import StreamModel
-#from skmultiflow.core.base import BaseEstimator
+# from skmultiflow.core.base import StreamModel
+from skmultiflow.core.base import BaseEstimator
 from skmultiflow.trees import HoeffdingTree
 from skmultiflow.utils.data_structures import InstanceWindow, FastBuffer
 
 
-class Goowe(StreamModel):
-#class Goowe(BaseEstimator):
+# class Goowe(StreamModel):
+class Goowe(BaseEstimator):
     """ GOOWE (Geometrically Optimum Online Weighted Ensemble), as it is
     described in Bonab and Can (2017). Common notation in the code is
     as follows:

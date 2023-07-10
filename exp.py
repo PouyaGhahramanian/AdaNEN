@@ -6,6 +6,9 @@
     Pouya Ghahramanian
     """
 
+import os
+import warnings
+warnings.filterwarnings("ignore")
 import sys
 sys.path.append('baselines')
 import numpy as np
@@ -21,8 +24,10 @@ from AdaNEN import AdaNEN
 from hbp import HBP
 from mlp import MLP
 
+import skmultiflow
+print(skmultiflow.__version__)
+
 # Classic machine learning baselines
-from skmultiflow.meta import AdditiveExpertEnsembleClassifier
 from skmultiflow.lazy.knn_adwin import KNNAdwin
 from skmultiflow.meta import OzaBaggingAdwin
 from skmultiflow.lazy import KNN
@@ -73,15 +78,14 @@ embeddings = None
 labels = None
 embedding_size = 300
 data_size = 0
-RESULTS_FILE = 'default'
 num_c = 2
 num_f = 300
-#data = None
+# data = None
 
 if(STREAM == 'nyt'):
     # Get data stream
     logging.info('\n\tReading data stream: {}'.format(str.upper(STREAM)))
-    df = pd.read_pickle('Data/nyt_modified.csv')
+    df = pd.read_pickle('data/nyt_modified.csv')
     data = df.values
     # Data ===> 0: Text, 1: Embedding_W2V, 2: Embedding_BERT, 3: Labels
     mean = np.mean(df['Label'].values)
@@ -96,13 +100,13 @@ if(STREAM == 'nyt'):
         embeddings = embeddings_bert
         embedding_size = 768
     labels = labels_
-    RESULTS_FILE = 'nyt'
+    if RESULTS_FILE == 'default': RESULTS_FILE = 'nyt'
     num_f = embedding_size
 
 elif(STREAM == 'elec'):
     # Get data stream
     logging.info('\n\tReading data stream: {}'.format(str.upper(STREAM)))
-    df = pd.read_csv('Data/elec.csv')
+    df = pd.read_csv('data/elec.csv')
     data = df.values
     # Data ===> 0-9: Features, 10: Labels
     data_size = data.shape[0]
@@ -112,12 +116,12 @@ elif(STREAM == 'elec'):
     labels_ = data[:,num_f]
     embeddings = data[:,:num_f]
     labels = labels_
-    RESULTS_FILE = 'elec'
+    if RESULTS_FILE == 'default': RESULTS_FILE = 'elec'
 
 elif(STREAM == 'phishing'):
     # Get data stream
     logging.info('\n\tReading data stream: {}'.format(str.upper(STREAM)))
-    df = pd.read_csv('Data/phishing.csv')
+    df = pd.read_csv('data/phishing.csv')
     data = df.values
     # Data ===> 0-5: Features, 6: Labels
     data_size = data.shape[0]
@@ -127,8 +131,7 @@ elif(STREAM == 'phishing'):
     labels_ = data[:,num_f]
     embeddings = data[:,:num_f]
     labels = labels_
-    if(RESULTS_FILE == 'default'):
-        RESULTS_FILE = 'phishing'
+    if(RESULTS_FILE == 'default'): RESULTS_FILE = 'phishing'
 
 elif(STREAM == 'hyperplane'):
     # Get data stream
@@ -144,13 +147,12 @@ elif(STREAM == 'hyperplane'):
     labels_ = data[:,num_f]
     embeddings = data[:,:num_f]
     labels = labels_
-    if(RESULTS_FILE == 'default'):
-        RESULTS_FILE = 'hyperplane'
+    if(RESULTS_FILE == 'default'): RESULTS_FILE = 'hyperplane'
 
 elif(STREAM == 'squares'):
     # Get data stream
     logging.info('\n\tReading data stream: {}'.format(str.upper(STREAM)))
-    df = pd.read_csv('Data/moving_squares.csv')
+    df = pd.read_csv('data/moving_squares.csv')
     data = df.values
     # Data ===> 0-5: Features, 6: Labels
     data_size = data.shape[0]
@@ -161,13 +163,12 @@ elif(STREAM == 'squares'):
     labels_ = data[:,num_f]
     embeddings = data[:,:num_f]
     labels = labels_
-    if(RESULTS_FILE == 'default'):
-        RESULTS_FILE = 'squares'
+    if(RESULTS_FILE == 'default'): RESULTS_FILE = 'squares'
 
 elif(STREAM == 'mg2c2d'):
     # Get data stream
     logging.info('\n\tReading data stream: {}'.format(str.upper(STREAM)))
-    data = np.loadtxt('Data/MG_2C_2D.txt', delimiter=',', dtype=float)    # Data ===> 0-5: Features, 6: Labels
+    data = np.loadtxt('data/MG_2C_2D.txt', delimiter=',', dtype=float)    # Data ===> 0-5: Features, 6: Labels
     data_size = data.shape[0]
     print(data.shape)
     texts = []
@@ -176,8 +177,7 @@ elif(STREAM == 'mg2c2d'):
     labels_ = data[:,num_f] - 1.
     embeddings = data[:,:num_f]
     labels = labels_
-    if(RESULTS_FILE == 'default'):
-        RESULTS_FILE = 'mg2c2d'
+    if(RESULTS_FILE == 'default'): RESULTS_FILE = 'mg2c2d'
 
 elif(STREAM == 'spam'):
     # Get data stream
@@ -192,13 +192,12 @@ elif(STREAM == 'spam'):
     labels_ = data[:,num_f]
     embeddings = data[:,:num_f]
     labels = labels_
-    if(RESULTS_FILE == 'default'):
-        RESULTS_FILE = 'spam'
+    if(RESULTS_FILE == 'default'): RESULTS_FILE = 'spam'
 
 elif(STREAM == 'usenet'):
     # Get data stream
     logging.info('\n\tReading data stream: {}'.format(str.upper(STREAM)))
-    df = pd.read_csv('Data/usenet.csv')
+    df = pd.read_csv('data/usenet.csv')
     data = df.values
     data_size = data.shape[0]
     print(data.shape)
@@ -208,8 +207,7 @@ elif(STREAM == 'usenet'):
     labels_ = data[:,num_f]
     embeddings = data[:,:num_f]
     labels = labels_
-    if(RESULTS_FILE == 'default'):
-        RESULTS_FILE = 'usenet'
+    if(RESULTS_FILE == 'default'): RESULTS_FILE = 'usenet'
 
 elif(STREAM == 'email'):
     # Get data stream
@@ -223,11 +221,10 @@ elif(STREAM == 'email'):
     labels_ = data[:,num_f]
     embeddings = data[:,:num_f]
     labels = labels_
-    if(RESULTS_FILE == 'default'):
-        RESULTS_FILE = 'email'
+    if(RESULTS_FILE == 'default'): RESULTS_FILE = 'email'
 
 else:
-    print('Error in dataset name: ', STREAM)
+    print('Error in the stream name: ', STREAM)
     exit()
 
 # Initialize Parameters and the Baseline Models
@@ -265,19 +262,18 @@ learn_pp = LearnPP(base_estimator=KNN(n_neighbors=8, max_window_size=2000, leaf_
 learn_pp_nse = LearnNSE(base_estimator=tree.DecisionTreeClassifier(class_weight=None, criterion='gini', max_depth=None, max_features=None, max_leaf_nodes=None, min_impurity_decrease=0., min_samples_leaf=1, min_samples_split=2, min_weight_fraction_leaf=0.0, random_state=None, splitter='best'), window_size=1, slope=0.5, crossing_point=10, pruning=None)
 lbg = LeverageBagging(base_estimator = KNN(n_neighbors=8, max_window_size=2000, leaf_size=30), n_estimators=2)
 hat = HAT()
-# Version of ScikitMultiflow to be used with GOOWE is: ?
-goowe = Goowe(n_max_components=N_MAX_CLASSIFIERS,
-              chunk_size=CHUNK_SIZE,
-              window_size=WINDOW_SIZE,
-              logging = False)
-goowe.prepare_post_analysis_req(num_f, num_targets, num_c, target_values)
-
-# Ensemble Parameters
+# Version of ScikitMultiflow to be used with GOOWE is: 0.4.1, Other models: 0.5.3
+# GOOWE Parameters
 N_MAX_CLASSIFIERS = 15
 CHUNK_SIZE = 500
 WINDOW_SIZE = 100
 num_targets = 1
 CHUNK_SIZE = 500
+goowe = Goowe(n_max_components=N_MAX_CLASSIFIERS,
+              chunk_size=CHUNK_SIZE,
+              window_size=WINDOW_SIZE,
+              logging = False)
+goowe.prepare_post_analysis_req(num_f, num_targets, num_c, target_values)
 
 # Define and Initialize Evaluation Variables
 # FIXME: Should fix 'GOOWE': dwm here
@@ -290,6 +286,10 @@ crrs = {'AdaNEN': 0.0, 'Adam': 0.0, 'SGD': 0.0, 'HBP': 0.0, 'DWM': 0.0,
              'AEE': 0.0, 'AWE': 0.0, 'HAT': 0.0, 'Learn++': 0.0,
              'Learn++.NSE': 0.0, 'ARF': 0.0, 'Oza-Adwin': 0.0, 'KNN-Adwin': 0.0,
              'GOOWE': 0.0}
+crrs_all = {'AdaNEN': 0.0, 'Adam': 0.0, 'SGD': 0.0, 'HBP': 0.0, 'DWM': 0.0,
+             'AEE': 0.0, 'AWE': 0.0, 'HAT': 0.0, 'Learn++': 0.0,
+             'Learn++.NSE': 0.0, 'ARF': 0.0, 'Oza-Adwin': 0.0, 'KNN-Adwin': 0.0,
+             'GOOWE': 0.0}
 preds = {'AdaNEN': 0.0, 'Adam': 0.0, 'SGD': 0.0, 'HBP': 0.0, 'DWM': 0.0,
              'AEE': 0.0, 'AWE': 0.0, 'HAT': 0.0, 'Learn++': 0.0,
              'Learn++.NSE': 0.0, 'ARF': 0.0, 'Oza-Adwin': 0.0, 'KNN-Adwin': 0.0,
@@ -298,10 +298,6 @@ accs = {'AdaNEN': [], 'Adam': [], 'SGD': [], 'HBP': [], 'DWM': [],
              'AEE': [], 'AWE': [], 'HAT': [], 'Learn++': [],
              'Learn++.NSE': [], 'ARF': [], 'Oza-Adwin': [], 'KNN-Adwin': [],
              'GOOWE': []}
-accs_tmp = {'AdaNEN': 0.0, 'Adam': 0.0, 'SGD': 0.0, 'HBP': 0.0, 'DWM': 0.0,
-             'AEE': 0.0, 'AWE': 0.0, 'HAT': 0.0, 'Learn++': 0.0,
-             'Learn++.NSE': 0.0, 'ARF': 0.0, 'Oza-Adwin': 0.0, 'KNN-Adwin': 0.0,
-             'GOOWE': 0.0}
 ensemble_weights = {'AdaNEN': [], 'HBP': []}
 losses = {'AdaNEN': [], 'Adam': [], 'SGD': [], 'HBP': []}
 ensemble_weights_tmp = {'AdaNEN': 0, 'HBP': 0}
@@ -313,7 +309,7 @@ times_all = {'AdaNEN': 0.0, 'Adam': 0.0, 'SGD': 0.0, 'HBP': 0.0, 'DWM': 0.0,
 # Exclude User-Specified Models
 for model in EXCLUDE_MODELS:
     models.pop(model)
-models.pop('GOOWE')
+# models.pop('GOOWE')
 
 model_keys = models.keys()
 clf_num = len(model_keys)
@@ -331,7 +327,7 @@ for i in range(init_size):
     adam.partial_fit(X_init, y_init, classes = target_values)
     sgd.partial_fit(X_init, y_init, classes = target_values)
     learn_pp_nse.partial_fit(X_init, y_init, classes = target_values)
-    #goowe.partial_fit(X_init, y_init)
+    goowe.partial_fit(X_init, y_init)
 
 # Test-Then-Train on Data One by One
 total = 0.
@@ -341,13 +337,31 @@ if(SAMPLE_SIZE != 0):
 for i in range(data_size):
     if((i + 1) % EVAL_WINDOW == 0):
         for model in models.keys():
-            accs[model].append(accs_tmp[model])
-            crrs[model] = 0.
-            accs_tmp[model] = 0.
-            total = 0.
+            acc = 100.0 * (crrs[model] / total)
+            accs[model].append(acc)
         for model in losses.keys():
             losses[model].append(losses_tmp[model])
+        for model in ensemble_weights.keys():
             ensemble_weights[model].append(ensemble_weights_tmp[model])
+        e_time = round(time.time() - s_time, 2)
+        logging.info('\t===============================================================')
+        logging.info('\tData Instance: {0}'
+                     '\n\t\tElapsed Time: {1}'
+                     '\n\t\t====== Overall Accuracies ======'
+                     .format(i+1, e_time))
+        for key in models.keys():
+            acc = 100.0 * (crrs_all[key] / (i + 1))
+            print('\t\t' + key + ': ' + str(round(acc, 2)))
+            crrs[key] = 0.
+        logging.info('\t===============================================================')
+        logging.info('\n\t\t====== Overall Times ======')
+        for key in models.keys():
+            print('\t\t' + key + ': ' + str(round(times_all[key], 2)))
+        logging.info('\t===============================================================')
+        if('AdaNEN' in models.keys()):
+            logging.info('\tAdaNEN Ensemble Weights: {0}'.format(adanen.get_weights()))
+        total = 0.
+
     total += 1
     X_t, Y_t = embeddings[i].reshape(-1, num_f), np.array(labels[i]).reshape(-1,)
     for m in model_keys:
@@ -363,7 +377,7 @@ for i in range(data_size):
                 print("Error in the prediction and partial fit of Model: {}.".format(m))
             times_all[m] += (time.time() - time_1)
             crrs[m] += np.sum(preds[m] == Y_t)
-            accs_tmp[m] = 100.0 * (crrs[m] / total)
+            crrs_all[m] += np.sum(preds[m] == Y_t)
             ensemble_weights_tmp[m] = models[m].get_weights()
         else:
             time_1 = time.time()
@@ -375,32 +389,22 @@ for i in range(data_size):
                 print ("Error in the prediction and partial fit of Model: {}.".format(m))
             times_all[m] += (time.time() - time_1)
             crrs[m] += np.sum(preds[m] == Y_t)
-            accs_tmp[m] = 100.0 * (crrs[m] / total)
+            crrs_all[m] += np.sum(preds[m] == Y_t)
 
-    if(i%10 == 0):
-        e_time = round(time.time() - s_time, 2)
-        logging.info('\t===============================================================')
-        logging.info('\tData Instance: {0}'
-                     '\n\t\tElapsed Time: {1}'
-                     '\n\t\t====== Accuracies ======'
-                     .format(i, e_time))
-        for key in models.keys():
-            print('\t\t' + key + ': ' + str(round(accs_tmp[key], 2)))
-        logging.info('\t===============================================================')
-
-        logging.info('\n\t\t====== Times ======')
-        for key in models.keys():
-            print('\t\t' + key + ': ' + str(round(times_all[key], 2)))
-        logging.info('\t===============================================================')
-        if('AdaNEN' in models.keys()):
-            logging.info('\tAdaNEN Ensemble Weights: {0}'.format(adanen.get_weights()))
+# Create directory if it does not exist to store the results
+RESULTS_ADDR = 'results/' + RESULTS_FILE + '/'
+try:
+   os.makedirs(RESULTS_ADDR)
+except FileExistsError:
+   logging.info('\n\t\tResults directory already exists. Overwriting results data...')
+   pass
 
 # Save Results for AdaNEN and the Baseline Models
-with open('Results/' + RESULTS_FILE + '/times.data', 'wb') as f:
+with open(RESULTS_ADDR + '/times.data', 'wb') as f:
     pickle.dump(times_all, f)
-with open('Results/' + RESULTS_FILE + '/accuracies_all.data', 'wb') as f:
+with open(RESULTS_ADDR + '/accuracies_all.data', 'wb') as f:
     pickle.dump(accs, f)
-with open('Results/' + RESULTS_FILE + '/ensemble_weights.data', 'wb') as f:
+with open(RESULTS_ADDR + '/ensemble_weights.data', 'wb') as f:
     pickle.dump(ensemble_weights, f)
-with open('Results/' + RESULTS_FILE + '/losses.data', 'wb') as f:
+with open(RESULTS_ADDR + '/losses.data', 'wb') as f:
     pickle.dump(losses, f)
