@@ -1,3 +1,6 @@
+
+import warnings
+warnings.filterwarnings("ignore")
 import numpy as np
 import matplotlib.pyplot as plt
 import sys
@@ -6,10 +9,14 @@ import argparse
 import os
 import pickle
 
-#dataset_size = 45312
-#dataset_size = 11055
-#dataset_size = 200000
-dataset_size = 1500
+# dataset_size = 6213 # Spam
+# dataset_size = 45312 # Electricity
+# dataset_size = 11055 # Phishing
+# dataset_size = 16000 # NYT
+# dataset_size = 127600 # AGNews
+# dataset_size = 11500 # 20NG
+# dataset_size = 200000 # Hyperplanes & MG2C2D & Squares
+dataset_size = 1500 # Email & Usenet
 multiply = 100.
 
     ##################################################

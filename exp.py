@@ -136,7 +136,7 @@ elif(STREAM == 'phishing'):
 elif(STREAM == 'hyperplane'):
     # Get data stream
     logging.info('\n\tReading data stream: {}'.format(str.upper(STREAM)))
-    df = pd.read_csv('Data/rotatingHyperplane.csv')
+    df = pd.read_csv('data/rotatingHyperplane.csv')
     data = df.values
     # Data ===> 0-5: Features, 6: Labels
     data_size = data.shape[0]
@@ -182,7 +182,7 @@ elif(STREAM == 'mg2c2d'):
 elif(STREAM == 'spam'):
     # Get data stream
     logging.info('\n\tReading data stream: {}'.format(str.upper(STREAM)))
-    df = pd.read_csv('Data/spam.csv')
+    df = pd.read_csv('data/spam.csv')
     data = df.values
     data_size = data.shape[0]
     print(data.shape)
@@ -212,7 +212,7 @@ elif(STREAM == 'usenet'):
 elif(STREAM == 'email'):
     # Get data stream
     logging.info('\n\tReading data stream: {}'.format(str.upper(STREAM)))
-    data = np.load('Data/email_data_numpy.npy')
+    data = np.load('data/email_data_numpy.npy')
     data_size = data.shape[0]
     print(data.shape)
     texts = []
@@ -229,11 +229,11 @@ else:
 
 # Initialize Parameters and the Baseline Models
 # Parameters
-architecture_ = (64, 32, 16)
-architecture = [64, 32, 16]
+architecture_ = (128, 64, 32, 16)
+architecture = [128, 64, 32, 16]
 layers = [1e-3, 1e-2, 1e-1]
 no = len(layers)
-learning_rate = 1e-3
+learning_rate = 1e-2
 target_values = [i for i in range(num_c)]
 
 # GPU Device
@@ -242,7 +242,7 @@ device = torch.device('cuda:0') if torch.cuda.is_available() else torch.device('
 # Baseline Models
 # Neural Models
 adanen = AdaNEN(feature_size = num_f, arch = architecture, num_classes = num_c, etha = 1e-4,
-                 betha = 0.85, s = 0.2, num_outs = no, lrs = layers, optimizer = 'rmsprop')
+                 betha = 0.8, s = 0.2, num_outs = no, lrs = layers, optimizer = 'rmsprop')
 adam = MLPClassifier(solver='adam', alpha=1e-5, learning_rate_init=1e-5,
             hidden_layer_sizes=architecture_, random_state=1)
 sgd = MLPClassifier(solver='sgd', alpha=1e-2, learning_rate_init=1e-2,
