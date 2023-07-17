@@ -77,10 +77,10 @@ To reproduce the results, follow these steps:
 ### Sample Experiments Run
 The following command runs an experiment on the first 1000 samples of the NYT stream, excludes the AEE and HAT models, and stores the results in the `results/nyt_results` directory.
 ```python3
-python3 exp.py -s nyt -d text -e bert -o nyt_results -w 10 -p 1000 -x AEE HAT
+python3 exp.py -s nyt -d text -o nyt_results -w 10 -p 1000 -x AEE HAT
 ```
 ## Citation
 <!---If you use AdaNEN in your research, please cite our paper:--->
 `To be updated.`
 ## Contact
-If you have any questions or suggestions, feel free to open an issue or pull request, or email us at <PouyaGhahramanian@gmail.com>.
+If you have any questions or suggestions, feel free to open an issue or pull request or email us at <PouyaGhahramanian@gmail.com>.
