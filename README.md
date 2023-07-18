@@ -80,6 +80,23 @@ The following command runs an experiment on the first 1000 samples of the NYT st
 ```python3
 python3 exp.py -s nyt -d text -o nyt_results -w 10 -p 1000 -x AEE HAT
 ```
+### 20NG-abrupt, 20NG-gradual, AGNews-abrupt, and AGNews-gradual Evolving Text Streams
+`to be updated`
+
+Our constructed evolving text streams can be accessed from the data directory of this repository. There are around 11.5K data instances in the 20NG, and 127.6K in the AGNews text streams. The data stream can be accessed and used with _pickle_ library in Python as follows:
+```python3
+import pickle
+
+```
+
+|      | 3.5K | 4K | 4.5K | 5K | 5.5K | 6K | 6.5K | 7K  | 7.5K | 8K | 8.5K | 9K  | 9.5K | 10K | 10.5K | 11K | 11.5K |
+|------|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
+| Comp | +    | +  | -    | -  | -    | -  | -    | +   | +    | +  | -    | -   | -    | +   | +     | +   | +     |
+| Rec  | -    | -  | +    | -  | -    | -  | +    | +   | -    | -  | +    | +   | +    | -   | +     | +   | -     |
+| Sci  | +    | -  | -    | +  | -    | +  | +    | -   | +    | -  | +    | -   | +    | +   | -     | +   | +     |
+| Tlk  | -    | -  | -    | -  | +    | +  | -    | -   | -    | +  | -    | +   | +    | +   | +     | -   | -     |
+| 1/DI | -    | 50 | 100  | 25 | 200  | 50 | 25   | 150 | 100  | 75 | 250  | 125 | 75   | 50  | 100   | 25  | 50    |
+
 ## Citation
 <!---If you use AdaNEN in your research, please cite our paper:--->
 `To be updated.`
