@@ -38,6 +38,7 @@ Parameters:
     
 ### Sample AdaNEN Run
 ```python3
+from AdaNEN import AdaNEN
 from sklearn.datasets import make_blobs
 data_size = 1000
 input, labels = make_blobs(n_samples = data_size, centers = 2, n_features = 300, random_state = 0)
