@@ -81,21 +81,44 @@ The following command runs an experiment on the first 1000 samples of the NYT st
 python3 exp.py -s nyt -d text -o nyt_results -w 10 -p 1000 -x AEE HAT
 ```
 ### 20NG-abrupt, 20NG-gradual, AGNews-abrupt, and AGNews-gradual Evolving Text Streams
-`to be updated`
 
-Our constructed evolving text streams can be accessed from the data directory of this repository. There are around 11.5K data instances in the 20NG, and 127.6K in the AGNews text streams. The data stream can be accessed and used with _pickle_ library in Python as follows:
+Our constructed 20NG-Ab and 20NG-Gr evolving text streams can be accessed from the data directory of this repository. AGNews streams are accessible from the following links.
+
+| Data Stream | AGNews-Ab (W2V embedding)                                                                               | AGNews-Gr (W2V embedding)                                                                               | AGNews-Ab (BERT embedding)                                                                              | AGNews-Gr (BERT embedding)                                                                              |
+|-------------|:-------------------------------------------------------------------------------------------------------:|:-------------------------------------------------------------------------------------------------------:|:-------------------------------------------------------------------------------------------------------:|:-------------------------------------------------------------------------------------------------------:|
+| Access Link | [Google Drive Link](https://drive.google.com/file/d/1ZGEP6BxB-rbMZGhQI2cog2CVeve37pl5/view?usp=sharing) | [Google Drive Link](https://drive.google.com/file/d/1urTmlKGqlK5g5hPMbrnuaP14GKOgycoe/view?usp=sharing) | [Google Drive Link](https://drive.google.com/file/d/1cwMFUdp-zNRuxNfDzjF7hcFPPCMHtv9Q/view?usp=sharing) | [Google Drive Link](https://drive.google.com/file/d/1GjiwgzQfnDuZKy8nrdv9ytUMURg-ZoP9/view?usp=sharing) |
+
+
+There are around 15.1K data instances in the 20NG, and 127.6K in the AGNews text streams. In both data streams, the first 300 features represent the document embeddings, and the last feature is the label. The 20NG data stream can be used with _pickle_ library in Python as follows:
 ```python3
 import pickle
-
+with open('data/20ng_abrupt.data', 'rb') as f:
+    stream = pickle.load(f)
 ```
+The concept drift distribution and the drift intensity values for the 20NG streams are shown in the following table.
 
-|      | 3.5K | 4K | 4.5K | 5K | 5.5K | 6K | 6.5K | 7K  | 7.5K | 8K | 8.5K | 9K  | 9.5K | 10K | 10.5K | 11K | 11.5K |
-|------|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
-| Comp | +    | +  | -    | -  | -    | -  | -    | +   | +    | +  | -    | -   | -    | +   | +     | +   | +     |
-| Rec  | -    | -  | +    | -  | -    | -  | +    | +   | -    | -  | +    | +   | +    | -   | +     | +   | -     |
-| Sci  | +    | -  | -    | +  | -    | +  | +    | -   | +    | -  | +    | -   | +    | +   | -     | +   | +     |
-| Tlk  | -    | -  | -    | -  | +    | +  | -    | -   | -    | +  | -    | +   | +    | +   | +     | -   | -     |
-| 1/DI | -    | 50 | 100  | 25 | 200  | 50 | 25   | 150 | 100  | 75 | 250  | 125 | 75   | 50  | 100   | 25  | 50    |
+|      | 3.5K | 4K | 4.5K | 5K | 5.5K | 6K | 6.5K | 7K  | 7.5K | 8K | 8.5K | 9K  | 9.5K | 10K | 10.5K | 11K | 11.5K | 15.1K |
+|------|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
+| Comp | +    | +  | -    | -  | -    | -  | -    | +   | +    | +  | -    | -   | -    | +   | +     | +   | +     | +     |
+| Rec  | -    | -  | +    | -  | -    | -  | +    | +   | -    | -  | +    | +   | +    | -   | +     | +   | -     | -     |
+| Sci  | +    | -  | -    | +  | -    | +  | +    | -   | +    | -  | +    | -   | +    | +   | -     | +   | +     | +     |
+| Tlk  | -    | -  | -    | -  | +    | +  | -    | -   | -    | +  | -    | +   | +    | +   | +     | -   | -     | -     |
+| 1/DI | -    | 50 | 100  | 25 | 200  | 50 | 25   | 150 | 100  | 75 | 250  | 125 | 75   | 50  | 100   | 25  | 50    | -     |
+
+The AGNews streams can be used with _pandas_ library in Python as follows:
+```python3
+import pandas as pd
+stream = pd.read_csv('/data/agnews_abrupt.csv')
+```
+The concept drift distribution and the drift intensity values for the AGNews streams are shown in the following table.
+
+|      | 10K | 20K | 30K | 40K | 50K | 60K | 70K | 80K  | 90K | 100K | 110K | 127.6K  |
+|------|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
+| World     | +    | -  | +    | -  | -    | +  | -    | +   | -    | +  | -    | +   |
+| Sports    | +    | -  | -    | +  | +    | -  | +    | -   | -    | +  | -    | +   |
+| Business  | -    | +  | +    | +  | -    | -  | +    | +   | +    | -  | +    | -   |
+| Sci/Tech  | -    | +  | -    | -  | +    | +  | -    | -   | +    | -  | +    | -   |
+| 1/DI | -  | 5000 | 1000  | 500 | 100  | 500 | 2500   | 250 | 2000  | 1000 | 10000  | 500 |
 
 ## Citation
 <!---If you use AdaNEN in your research, please cite our paper:--->
