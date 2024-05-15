@@ -25,7 +25,11 @@ class AdaNEN(nn.Module):
         super(AdaNEN, self).__init__()
         if len(arch) < 1:
             raise ValueError('Parameter arch should be a list of at least one element to specify the number of neurons in the first hidden layer.')
-        self.device = torch.device('cuda:0') if torch.cuda.is_available() else torch.device('cpu')
+        self.device = torch.device('cpu')
+        if torch.backends.mps.is_available():
+            self.device = torch.device('mps')
+        else:
+            self.device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
         self.betha = nn.Parameter(torch.tensor(betha), requires_grad=False).to(self.device)
         self.etha = nn.Parameter(torch.tensor(etha), requires_grad=False).to(self.device)
         self.s = nn.Parameter(torch.tensor(s), requires_grad=False).to(self.device)
@@ -102,7 +106,7 @@ class AdaNEN(nn.Module):
     def partial_fit(self, x, y):
 
         self.train()
-        y = torch.from_numpy(y).to(self.device)
+        y = torch.from_numpy(y.astype(np.float32)).to(self.device)
         fs = self.forward(x)
         criterion = nn.CrossEntropyLoss()
         losses = []
