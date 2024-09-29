@@ -1,5 +1,6 @@
 # AdaNEN: Adaptive Neural Ensemble Network
 This repository contains the data and implementation of the research presented in our paper, "A Novel Neural Ensemble Architecture for On-The-Fly Classification of Evolving Text Streams", submitted to ACM Transactions on Knowledge Discovery from Data (TKDD).
+
 ## Citation
 If you use our work in your research, please cite it as follows:
 
@@ -7,21 +8,27 @@ _BibTeX entry_
 
 @article{10.1145/3639054,
 author = {Ghahramanian, Pouya and Bakhshi, Sepehr and Bonab, Hamed and Can, Fazli},
-title = {A Novel Neural Ensemble Architecture for On-The-Fly Classification of Evolving Text Streams},
-year = {2023},
+title = {A Novel Neural Ensemble Architecture for On-the-fly Classification of Evolving Text Streams},
+year = {2024},
+issue_date = {May 2024},
 publisher = {Association for Computing Machinery},
 address = {New York, NY, USA},
+volume = {18},
+number = {4},
 issn = {1556-4681},
 url = {https://doi.org/10.1145/3639054},
 doi = {10.1145/3639054},
 journal = {ACM Trans. Knowl. Discov. Data},
-month = {dec},
-keywords = {text stream classification, concept drift, ensemble methods, Data stream mining, neural networks}
+month = feb,
+articleno = {101},
+numpages = {24},
+keywords = {Data stream mining, concept drift, text stream classification, ensemble methods, neural networks}
 }
 
 _Formatted Citation_
 
-Pouya Ghahramanian, Sepehr Bakhshi, Hamed Bonab, and Fazli Can. 2023. A Novel Neural Ensemble Architecture for On-The-Fly Classification of Evolving Text Streams. ACM Trans. Knowl. Discov. Data Just Accepted (December 2023). https://doi.org/10.1145/3639054
+Pouya Ghahramanian, Sepehr Bakhshi, Hamed Bonab, and Fazli Can. 2024. A Novel Neural Ensemble Architecture for On-the-fly Classification of Evolving Text Streams. ACM Trans. Knowl. Discov. Data 18, 4, Article 101 (May 2024), 24 pages. https://doi.org/10.1145/3639054
+
 
 ## Abstract
 We study on-the-fly classification of evolving text streams in which the relation between the input data target labels changes over time—i.e. “concept drift”. These variations decrease the model’s performance, as predictions become less accurate over-time and they necessitate a more adaptable system. While most studies focus on concept drift detection and handling with ensemble approaches, the application of neural models in this area is relatively less studied. We introduce Adaptive Neural Ensemble Network (AdaNEN ), a novel ensemble-based neural approach, capable of handling concept drift in data streams. With our novel architecture, we address some of the problems neural models face when exploited for online adaptive learning environments. Most current studies address concept drift detection and handling in numerical streams, and the evolving text stream classification remains relatively unexplored. We hypothesize that the lack of public and large-scale experimental data could be one reason. To this end, we propose a method based on an existing approach for generating evolving text streams by introducing various types of concept drifts to real-world text datasets. We provide an extensive evaluation of our proposed approach using 12 state-of-the-art baselines and 13 datasets. We first evaluate concept drift handling capability of AdaNEN and the baseline models on evolving numerical streams; this aims to demonstrate the concept drift handling capabilities of our method on a general spectrum and motivate its use in evolving text streams. The models are then evaluated in evolving text stream classification. Our experimental results show that AdaNEN consistently outperforms the existing approaches in terms of predictive performance with conservative efficiency.
